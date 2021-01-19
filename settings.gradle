@@ -1,0 +1,3 @@
+include ':UIReferenceImplementation'
+include ':app'
+rootProject.name = "NotesCompanionDevice"
