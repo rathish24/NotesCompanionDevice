@@ -302,52 +302,58 @@ public class DocumentController
     }
 
     Engine engine = editor.getEngine();
+
     final String[] partTypes = engine.getSupportedPartTypes();
-    final int[] selected = new int[]{0};
-    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity).setCancelable(false);
-    dialogBuilder.setTitle(R.string.newPart_title);
-    dialogBuilder.setSingleChoiceItems(partTypes, selected[0], new DialogInterface.OnClickListener()
-    {
-      @Override
-      public void onClick(DialogInterface dialog, int which)
-      {
-        selected[0] = which;
-      }
-    });
-    dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
-    {
-      @Override
-      public void onClick(DialogInterface dialog, int which)
-      {
-        String partType = partTypes[selected[0]];
-        ContentPart newPart = targetPackage.createPart(partType);
-        setPart(targetFile, targetPackage, newPart);
-      }
-    });
-    if (showCancel)
-    {
-      dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
-      {
-        @Override
-        public void onClick(DialogInterface dialog, int which)
-        {
-          if (closeOnCancel)
-          {
-            try
-            {
-              targetPackage.save();
-            }
-            catch (IOException e)
-            {
-              Log.e(TAG, "Failed to save package", e);
-            }
-            targetPackage.close();
-          }
-        }
-      });
-    }
-    AlertDialog dialog = dialogBuilder.create();
-    dialog.show();
+    final int rawContent = 4;
+    String partType = partTypes[rawContent];
+    ContentPart newPart = targetPackage.createPart(partType);
+
+    setPart(targetFile, targetPackage, newPart);
+//    final int[] selected = new int[]{0};
+//    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity).setCancelable(false);
+//    dialogBuilder.setTitle(R.string.newPart_title);
+//    dialogBuilder.setSingleChoiceItems(partTypes, selected[0], new DialogInterface.OnClickListener()
+//    {
+//      @Override
+//      public void onClick(DialogInterface dialog, int which)
+//      {
+//        selected[0] = which;
+//      }
+//    });
+//    dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
+//    {
+//      @Override
+//      public void onClick(DialogInterface dialog, int which)
+//      {
+//        String partType = partTypes[selected[0]];
+//        ContentPart newPart = targetPackage.createPart(partType);
+//        setPart(targetFile, targetPackage, newPart);
+//      }
+//    });
+//    if (showCancel)
+//    {
+//      dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+//      {
+//        @Override
+//        public void onClick(DialogInterface dialog, int which)
+//        {
+//          if (closeOnCancel)
+//          {
+//            try
+//            {
+//              targetPackage.save();
+//            }
+//            catch (IOException e)
+//            {
+//              Log.e(TAG, "Failed to save package", e);
+//            }
+//            targetPackage.close();
+//          }
+//        }
+//      });
+//    }
+//    AlertDialog dialog = dialogBuilder.create();
+//    dialog.show();
     return true;
   }
 
@@ -417,14 +423,15 @@ public class DocumentController
     return true;
   }
 
-  public final boolean convert(final ContentBlock block)
+  public final boolean convert(final ContentBlock block, String colorHex)
   {
     ConversionState[] supportedStates = editor.getSupportedTargetConversionStates(block);
 
     if (supportedStates.length == 0)
       return false;
-
+    editor.setTheme("stroke { color: "+colorHex+"; }");
     editor.convert(block, supportedStates[0]);
+
 
     return true;
   }

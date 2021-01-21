@@ -6,7 +6,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
 }
-
+apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -34,6 +34,16 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
 }
 
 dependencies {
@@ -44,9 +54,37 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation project(path: ':UIReferenceImplementation')
+    implementation 'androidx.cardview:cardview:1.0.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.github.dhaval2404:colorpicker:2.0'
+    //for google drive integration
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'com.google.http-client:google-http-client-gson:1.26.0'
+    implementation('com.google.api-client:google-api-client-android:1.26.0')
+            {
+                exclude group: 'org.apache.httpcomponents'
+            }
+    implementation('com.google.apis:google-api-services-drive:v3-rev136-1.25.0')
+            {
+                exclude group: 'org.apache.httpcomponents'
+            }
+
+    //Adding the card view library
+    implementation 'androidx.cardview:cardview:1.0.0'
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    //room
+    implementation 'androidx.room:room-ktx:2.3.0-alpha04'
+    implementation 'androidx.room:room-runtime:2.3.0-alpha04'
+    kapt 'androidx.room:room-compiler:2.2.6'
+
+
+
 }
 
 task DownloadAndExtractAssets(type: Copy) {

@@ -14,4 +14,9 @@
     <color name="toolbar_icon_enabled">#ffffffff</color>
     <color name="image_button_disabled">@android:color/darker_gray</color>
     <color name="image_button_enabled">@color/colorPrimary</color>
+    <color name="ncd_text">#242628</color>
+    <color name="ncd_bg_color">#F5F6F7</color>
+    <color name="border">#D5DCE1</color>
+    <color name="menu_text">#515358</color>
+    <color name="disabled_text">#D8D8D8</color>
 </resources>

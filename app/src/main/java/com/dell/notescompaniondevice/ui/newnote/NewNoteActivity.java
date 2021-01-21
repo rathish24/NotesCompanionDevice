@@ -11,15 +11,27 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
+
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dell.notescompaniondevice.NotesCompanionDeviceApplication;
 import com.dell.notescompaniondevice.R;
+import com.dell.notescompaniondevice.room.AppDatabase;
+
+import com.github.dhaval2404.colorpicker.ColorPickerDialog;
+import com.github.dhaval2404.colorpicker.listener.ColorListener;
+import com.github.dhaval2404.colorpicker.listener.DismissListener;
+import com.github.dhaval2404.colorpicker.model.ColorShape;
 import com.myscript.iink.Configuration;
 import com.myscript.iink.ContentBlock;
 import com.myscript.iink.ContentPart;
@@ -35,13 +47,17 @@ import com.myscript.iink.uireferenceimplementation.EditorView;
 import com.myscript.iink.uireferenceimplementation.IInputControllerListener;
 import com.myscript.iink.uireferenceimplementation.InputController;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
-public class NewNoteActivity extends AppCompatActivity implements View.OnClickListener
-{
+public class NewNoteActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
     private static final String TAG = "MainActivity";
 
     private static final String INPUT_MODE_KEY = "inputMode";
@@ -52,6 +68,13 @@ public class NewNoteActivity extends AppCompatActivity implements View.OnClickLi
 
     protected DocumentController documentController;
 
+    private int mColor = 0;
+    private ImageView ivColorPicker;
+    private TextView tvDate;
+    private Editor editor;
+    private Button btnUndo,btnRedo,btnBack;
+    private ImageView btnMenu;
+    String colorPickerHex = "#000";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -79,35 +102,36 @@ public class NewNoteActivity extends AppCompatActivity implements View.OnClickLi
 
         editorView.setEngine(engine);
 
-        final Editor editor = editorView.getEditor();
-        editor.addListener(new IEditorListener()
-        {
-            @Override
-            public void partChanging(Editor editor, ContentPart oldPart, ContentPart newPart)
-            {
-                // no-op
-            }
+         editor = editorView.getEditor();
 
-            @Override
-            public void partChanged(Editor editor)
-            {
-                invalidateOptionsMenu();
-                invalidateIconButtons();
-            }
-
-            @Override
-            public void contentChanged(Editor editor, String[] blockIds)
-            {
-                invalidateOptionsMenu();
-                invalidateIconButtons();
-            }
-
-            @Override
-            public void onError(Editor editor, String blockId, String message)
-            {
-                Log.e(TAG, "Failed to edit block \"" + blockId + "\"" + message);
-            }
-        });
+//        editor.addListener(new IEditorListener()
+//        {
+//            @Override
+//            public void partChanging(Editor editor, ContentPart oldPart, ContentPart newPart)
+//            {
+//                // no-op
+//            }
+//
+//            @Override
+//            public void partChanged(Editor editor)
+//            {
+//                invalidateOptionsMenu();
+//                invalidateIconButtons();
+//            }
+//
+//            @Override
+//            public void contentChanged(Editor editor, String[] blockIds)
+//            {
+//                invalidateOptionsMenu();
+//                invalidateIconButtons();
+//            }
+//
+//            @Override
+//            public void onError(Editor editor, String blockId, String message)
+//            {
+//                Log.e(TAG, "Failed to edit block \"" + blockId + "\"" + message);
+//            }
+//        });
 
         editorView.setImageLoader(new ImageLoader(editor));
         editorView.setInputControllerListener(new IInputControllerListener()
@@ -148,7 +172,58 @@ public class NewNoteActivity extends AppCompatActivity implements View.OnClickLi
         findViewById(R.id.button_redo).setOnClickListener(this);
         findViewById(R.id.button_clear).setOnClickListener(this);
 */
-        invalidateIconButtons();
+      //  findViewById(R.id.btnMenu).setOnClickListener(this);
+
+        findViewById(R.id.ivColorPickerDummy).setOnClickListener(this);
+
+        ivColorPicker = (ImageView)findViewById(R.id.ivColorPicker);
+        tvDate = (TextView)findViewById(R.id.tvDate);
+        btnMenu = (ImageView) findViewById(R.id.btnMenu);
+        btnBack = (Button)findViewById(R.id.btnBack);
+        btnRedo = (Button)findViewById(R.id.btnRedo);
+        btnUndo = (Button)findViewById(R.id.btnUndo);
+        btnMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPopup(view);
+            }
+        });
+        btnUndo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editorView.getEditor().undo();
+            }
+        });
+        btnRedo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editorView.getEditor().redo();
+            }
+        });
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               // editorView.getEditor().clear();
+                saveTextContent();
+               // finish();
+            }
+        });
+
+        initializeDate();
+      //  invalidateIconButtons();
+    }
+
+    private void initializeDate() {
+
+        Date dNow = new Date( );
+        SimpleDateFormat ft =
+                new SimpleDateFormat("dd MMMM yyyy");
+
+        System.out.println("Current Date: " + ft.format(dNow));
+       // tvDate.setText(ft.format(dNow));
+        String lastModified = ft.format(dNow);
+        tvDate.setText(lastModified);
+
     }
 
     @Override
@@ -238,8 +313,9 @@ public class NewNoteActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v)
     {
-//        switch (v.getId())
-//        {
+        Editor editor = editorView.getEditor();
+        switch (v.getId())
+        {
 //            case R.id.button_input_mode_forcePen:
 //                setInputMode(InputController.INPUT_MODE_FORCE_PEN);
 //                break;
@@ -258,10 +334,69 @@ public class NewNoteActivity extends AppCompatActivity implements View.OnClickLi
 //            case R.id.button_clear:
 //                editorView.getEditor().clear();
 //                break;
-//            default:
-//                Log.e(TAG, "Failed to handle click event");
-//                break;
-//        }
+          //  case R.id.btnMenu:
+          //      showPopup(v);
+//            case R.id.btnBack:
+//                saveTextContent(v);
+            case R.id.ivColorPickerDummy:
+                    showColorPicker(v);
+//            case R.id.btnUndo:
+//                editor.undo();
+//            case R.id.btnRedo:
+//                editor.redo();
+
+            default:
+                Log.e(TAG, "Failed to handle click event");
+                break;
+        }
+
+    }
+    private void showColorPicker(View v) {
+        new ColorPickerDialog.Builder((this))
+                .setColorShape(ColorShape.SQAURE)
+
+                .setColorListener(new ColorListener() {
+                    @Override
+                    public void onColorSelected(int color, @NotNull String colorHex) {
+
+                      Log.e("Color::" , ""+color);
+                        colorPickerHex = colorHex;
+                        ivColorPicker.setBackgroundColor(color);
+                        editor.setTheme("stroke { color: "+colorHex+"; }");
+
+                    }
+                })
+                .setDismissListener(new DismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        Log.d("ColorPickerDialog", "Handle dismiss event");
+                    }
+                })
+                .show();
+
+    }
+    private void saveTextContent() {
+
+        try {
+            String edits = editor.export_(null,MimeType.TEXT);
+
+            Log.e("edits:",""+edits);
+            Toast.makeText(getApplicationContext(), "This is my Toast message!"+edits,
+                    Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String part = editorView.getImageLoader().getEditor().getPart().toString();
+       Log.e("part:",""+part);
+
+    }
+
+    private void showPopup(View v) {
+
+        PopupMenu popup = new PopupMenu(NewNoteActivity.this, v);
+        popup.setOnMenuItemClickListener(NewNoteActivity.this);
+        popup.inflate(R.menu.new_note_menu);
+        popup.show();
     }
 
     private boolean addImage(final float x, final float y)
@@ -581,6 +716,7 @@ public class NewNoteActivity extends AppCompatActivity implements View.OnClickLi
         Editor editor = editorView.getEditor();
         final boolean canUndo = editor.canUndo();
         final boolean canRedo = editor.canRedo();
+
         runOnUiThread(new Runnable()
         {
             @Override
@@ -594,5 +730,22 @@ public class NewNoteActivity extends AppCompatActivity implements View.OnClickLi
 //                imageButtonClear.setEnabled(documentController != null && documentController.hasPart());
             }
         });
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_convert:
+                // do your code
+
+                return documentController.convert(null,colorPickerHex);
+            case R.id.menu_export:
+                // do your code
+                return documentController.export(null);
+            case R.id.menu_clear:
+                return documentController.resetView();
+            default:
+                return false;
+        }
     }
 }

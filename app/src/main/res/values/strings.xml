@@ -31,5 +31,22 @@
 
     <string name="ok">Ok</string>
     <string name="cancel">Cancel</string>
+    <string name="hello_georg">Hello, George</string>
+    <string name="share">Share</string>
+    <string name="duplicate_note">Duplicate Note</string>
+    <string name="preview">Preview</string>
+    <string name="delete">Delete</string>
 
+    <style name="FooterCardView" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MaterialCardView.Cut</item>
+    </style>
+
+
+    <style name="ShapeAppearanceOverlay.MaterialCardView.Cut" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">8dp</item>
+        <item name="cornerSizeTopLeft">8dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
 </resources>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E5E5E5"
+    android:orientation="vertical"
+    tools:ignore="MissingDefaultResource">
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/dashboard_header" />
+
+    <include
+        layout="@layout/dashboard_header_menu"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="140dp" />
+
+    <FrameLayout
+        android:id="@+id/no_notes_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="196dp"
+        android:background="@color/ncd_bg_color"
+        android:visibility="visible">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="32dp"
+            android:text="No New Notes"
+            android:textColor="@color/disabled_text"
+            android:textSize="24sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/dashboard_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="196dp"
+        android:background="@color/ncd_bg_color"
+        android:visibility="gone">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:clipToPadding="false"
+                android:scrollbars="vertical" />
+        </ScrollView>
+    </FrameLayout>
+
+    <include
+        layout="@layout/dashboard_footer_menu"
+        android:layout_width="match_parent"
+        android:layout_height="104dp"
+        android:layout_alignParentBottom="true" />
+
+
+</RelativeLayout>
