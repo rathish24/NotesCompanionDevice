@@ -21,7 +21,7 @@
 
 
     <EditText
-        android:id="@+id/tvTitle"
+        android:id="@+id/etTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -32,8 +32,6 @@
         android:textColorHint="#515358"
         android:textSize="48sp"
         android:background="@android:color/transparent"
-
-
         app:layout_constraintBottom_toBottomOf="@+id/btnBack"
         app:layout_constraintStart_toEndOf="@+id/btnBack"
         app:layout_constraintTop_toTopOf="@+id/btnBack"
@@ -47,8 +45,8 @@
         android:text="Last modified"
         android:textColor="#515358"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/tvTitle"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+        app:layout_constraintStart_toStartOf="@+id/etTitle"
+        app:layout_constraintTop_toBottomOf="@+id/etTitle" />
 
     <TextView
         android:id="@+id/tvDate"

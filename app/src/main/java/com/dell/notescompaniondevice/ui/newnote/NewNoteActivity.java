@@ -73,6 +73,7 @@ public class NewNoteActivity extends AppCompatActivity implements View.OnClickLi
     private TextView tvDate;
     private Editor editor;
     private Button btnUndo,btnRedo,btnBack;
+    private EditText etTitle;
     private ImageView btnMenu;
     String colorPickerHex = "#000";
     @Override
@@ -182,6 +183,7 @@ public class NewNoteActivity extends AppCompatActivity implements View.OnClickLi
         btnBack = (Button)findViewById(R.id.btnBack);
         btnRedo = (Button)findViewById(R.id.btnRedo);
         btnUndo = (Button)findViewById(R.id.btnUndo);
+        etTitle = (EditText)findViewById(R.id.etTitle);
         btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -205,7 +207,8 @@ public class NewNoteActivity extends AppCompatActivity implements View.OnClickLi
             public void onClick(View view) {
                // editorView.getEditor().clear();
                 saveTextContent();
-               // finish();
+                editorView.getEditor().clear();
+                finish();
             }
         });
 

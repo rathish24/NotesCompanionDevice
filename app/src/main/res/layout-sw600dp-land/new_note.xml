@@ -20,15 +20,18 @@
         tools:ignore="MissingConstraints" />
 
 
-    <TextView
-        android:id="@+id/tvTitle"
+    <EditText
+        android:id="@+id/etTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:text="Untitled"
-        android:fontFamily="@font/ttcommons_bold"
-        android:textColor="@color/black"
-        android:textSize="30sp"
+        android:fontFamily="@font/ttcommons_medium"
+        android:inputType="text"
+        android:hint="Untitled"
+        android:textColor="#515358"
+        android:textColorHint="#515358"
+        android:textSize="48sp"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/btnBack"
         app:layout_constraintStart_toEndOf="@+id/btnBack"
         app:layout_constraintTop_toTopOf="@+id/btnBack"
@@ -42,8 +45,8 @@
         android:text="Last modified"
         android:textColor="@color/black"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/tvTitle"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+        app:layout_constraintStart_toStartOf="@+id/etTitle"
+        app:layout_constraintTop_toBottomOf="@+id/etTitle" />
 
     <TextView
         android:id="@+id/tvDate"
